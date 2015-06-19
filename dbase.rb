@@ -7,9 +7,9 @@ class Dbase
 		ActiveRecord::Base.establish_connection(
   			:adapter  => 'postgresql',
   			:host     => 'localhost',
-			:port 	  => '5432',
+				:port 	  => '5432',
    			:username => 'santiago',
-   			:password => '940412',
+   			:password => '136',
   			:database => 'game',
    			:encoding => 'utf8'
 		)
@@ -18,36 +18,38 @@ end
 
 
 class Users < ActiveRecord::Base
+	@user
 	def create
-		@user = Users.create(user_id: '1', name: 'alex', surname: 'safa')
+		@user = Users.create(user_id: 1, name: "alex", surname: "safronov")
+    "Created: name: #{@user.name}, id: #{@user.user_id}"
 	end
 
 	def read
 		@user = Users.first
-		"#{@user}"
+		"#{@user.name}"
 	end
 
 	def delete
-		@user = Users.find_by(user_id: '1')
-  		@user.destroy
+		@user = Users.find_by(user_id: 1)
+    @user.destroy
 	end
 end
 
 
-
-class Buldings < ActiveRecord::Base
+class Buildings < ActiveRecord::Base
+  @building
 	def create
-		@building = Buldings.create(bulding_id: '1', owner_id: '1')		
+		  @building = Buildings.create(building_id: 1, owner_id: 1)
 	end
-	
+
 	def read
-		@bulding = Buldings.first
-		"#{@bulding}"
+		  @building = Buildings.first
+		  "#{@building.id}"
 	end
 
 	def delete
-		@bulding = Buldings.find_by(owner_id: '1')
-  		@bulding.destroy
+		  @building = Buildings.find_by(owner_id: 1)
+  		@building.destroy
 	end
 end
 

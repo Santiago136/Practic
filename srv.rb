@@ -9,33 +9,29 @@ db.connect
 user = Users.new
 building = Buildings.new
 
+#Actions with users
 get '/crt_u' do
-	#dbase.connect
-	user = User.create
-  	#user.save
-  	"Created: name: #{user.name}, id: #{user.user_id}"
+  	user.create
 end
 
 get '/read_u' do
-	#dbase.connect
- 	user = User.read 
+  	user.read
 end
 
 get '/del_u' do
-	#dbase.connect
-  	user = User.delete
+  	user.delete
   	"Deleted"
 end
 
-##############################################################
+#Actions with buildings
 get '/crt_b' do
 	building.create
 end
 
 get '/read_b' do
-	bulding.read
+	building.read
 end
 
 get '/del_b' do
-	bulding.delete
+	building.delete
 end

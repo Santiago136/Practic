@@ -10,7 +10,7 @@ user = Users.new
 building = Buildings.new
 
 #Actions with users
-get '/crt_u' do
+get '/new_u' do
   	user.create
 end
 
@@ -19,12 +19,12 @@ get '/read_u' do
 end
 
 get '/del_u' do
-  	user.delete
-  	"Deleted"
+	building.delete_by_owner(1)
+  	user.delete(1)
 end
 
 #Actions with buildings
-get '/crt_b' do
+get '/new_b' do
 	building.create
 end
 
@@ -33,5 +33,5 @@ get '/read_b' do
 end
 
 get '/del_b' do
-	building.delete
+	building.delete(1)
 end

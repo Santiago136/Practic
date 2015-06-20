@@ -11,7 +11,7 @@ building = Buildings.new
 
 #Actions with users
 get '/new_u' do
-  	user.create
+  	user.create("Santiago", "Safronov")
 end
 
 get '/read_u' do
@@ -25,7 +25,7 @@ end
 
 #Actions with buildings
 get '/new_b' do
-	building.create
+	building.create(100500, 10, 10, "factory")
 end
 
 get '/read_b' do

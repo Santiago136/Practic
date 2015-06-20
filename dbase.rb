@@ -18,33 +18,44 @@ end
 
 
 class Users < ActiveRecord::Base
-	validates :user_id, presence: true
+	validates :id, presence: true
 	@user
 
 	def create(n, sn)
 		last_user = Users.last
 		if last_user != nil
-			@user = Users.create(user_id: last_user.user_id+1, name: "#{n}", surname: "#{sn}").valid?
+			@user = Users.create(id: last_user.id+1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0).valid?
 		else
-			@user = Users.create(user_id: 1, name: "#{n}", surname: "{sn}").valid?	
+			@user = Users.create(id: 1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0).valid?	
 		end
-		#"Created: #{@user.name} #{@user.surname} with number: #{@user.user_id} "
 		"Created"
 	end
 
-	def read
-		@user = Users.last
-		"#{@user.name}"
+	def read(u_id)
+		@user = Users.find_by(id: u_id)
+		"#{@user.name}, #{@user.surname}, #{@user.id}"
 	end
 
-	def delete(id)
-		@user = Users.find_by(user_id: id)
+	def delete(u_id)
+		@user = Users.find_by(id: u_id)
 		if (@user != nil)
    			@user.destroy
 			"User and user's buildings were deleted"
 		else
 			"There were nothing to delete"
 		end
+	end
+	
+	def inc(u_id)
+		@user = Users.find_by(id: u_id)
+		@user.num_of_buildings = @user.num_of_buildings + 1
+		@user.save
+	end
+	
+	def dec(u_id)
+		@user = Users.find_by(id: u_id)
+		@user.num_of_buildings = @user.num_of_buildings - 1
+		@user.save
 	end
 end
 
@@ -60,20 +71,22 @@ class Buildings < ActiveRecord::Base
 		else
 			@building = Buildings.create(id: 1, owner_id: o_id, x: xx, y: yy, work_type: w_type).valid?
 		end
-		#"Created: id: #{@building.id}, owner: #{@building.owner_id}, x: #{@building.x}, y: #{@building.y}"
 		"Created"
 	end
 
-	def read
-		@building = Buildings.last
-		"#{@building.id}"
+	def read(b_id)
+		@building = Buildings.find_by(id: b_id)
+		"#{@building.id}, #{@duilding.type}, #{@duilding.x}, #{@duilding.y}"
 	end
 	
 	#Удаление по id 
 	def delete(b_id)
 		@building = Buildings.find_by(id: b_id)
-  		@building.destroy
-		"Building deleted"
+		if (@building != nil)
+  			@building.destroy
+		else
+			"Delete error"
+		end
 	end
 
 	#Удаление по хозяину

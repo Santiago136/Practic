@@ -11,27 +11,29 @@ building = Buildings.new
 
 #Actions with users
 get '/new_u' do
-  	user.create("Santiago", "Safronov")
+  	user.create(params[:name], params[:surname])
 end
 
 get '/read_u' do
-  	user.read
+  	user.read(params[:id])
 end
 
 get '/del_u' do
-	building.delete_by_owner(1)
-  	user.delete(1)
+	building.delete_by_owner(params[:id])
+  	user.delete(params[:id])
 end
 
 #Actions with buildings
 get '/new_b' do
-	building.create(100500, 10, 10, "factory")
+	building.create(params[:id], params[:x], params[:y], params[:type])
+	user.inc(params[:id])
 end
 
 get '/read_b' do
-	building.read
+	building.read(params[:id])
 end
 
 get '/del_b' do
-	building.delete(1)
+	building.delete(params[:id])
+	user.dec(params[:owner_id])
 end

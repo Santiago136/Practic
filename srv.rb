@@ -10,30 +10,33 @@ user = Users.new
 building = Buildings.new
 
 #Actions with users
-get '/new_u' do
+get '/new_u/:name-:surname' do
   	user.create(params[:name], params[:surname])
 end
 
-get '/read_u' do
+get '/read_u/:id' do
   	user.read(params[:id])
 end
 
-get '/del_u' do
-	building.delete_by_owner(params[:id])
+get '/del_u/:id' do
+	building.delete_by_owner(params[:id], user.find_num(params[:id]))
   	user.delete(params[:id])
+
 end
 
 #Actions with buildings
-get '/new_b' do
-	building.create(params[:id], params[:x], params[:y], params[:type])
+get '/new_b/:id-:x-:y-:work_type' do
 	user.inc(params[:id])
+	out = building.create(params[:id], params[:x], params[:y], params[:work_type])
 end
 
-get '/read_b' do
+get '/read_b/:id' do
 	building.read(params[:id])
 end
 
-get '/del_b' do
+get '/del_b/:id' do
+	user.dec(building.find_owner(:id) )
 	building.delete(params[:id])
-	user.dec(params[:owner_id])
 end
+
+

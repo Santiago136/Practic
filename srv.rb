@@ -21,7 +21,6 @@ end
 get '/del_u/:id' do
 	building.delete_by_owner(params[:id], user.find_num(params[:id]))
   	user.delete(params[:id])
-
 end
 
 #Actions with buildings
@@ -30,8 +29,12 @@ get '/new_b/:id-:x-:y-:work_type' do
 	out = building.create(params[:id], params[:x], params[:y], params[:work_type])
 end
 
-get '/read_b/:id' do
-	building.read(params[:id])
+get '/read_b/:owner_id' do
+	building.read(params[:owner_id], user.find_num(params[:owner_id]))
+end
+
+get '/move/:id-:x-:y' do
+	buildind.move(params[:id], params[:x], params[:y])
 end
 
 get '/del_b/:id' do

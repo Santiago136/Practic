@@ -27,9 +27,9 @@ class Users < ActiveRecord::Base
 		if check == nil
 			last_user = Users.last
 			if last_user != nil
-				@user = Users.create(id: last_user.id+1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0).valid?
+				@user = Users.create(id: last_user.id+1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0, deposit: 0).valid?
 			else
-				@user = Users.create(id: 1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0).valid?	
+				@user = Users.create(id: 1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0, deposit: 0).valid?	
 			end
 			"Created"
 		else
@@ -44,7 +44,7 @@ class Users < ActiveRecord::Base
 		if @user != nil
 			string = '<?xml version="1.0" encoding="utf-8"?>'
 			File.open('info.xml', 'w'){ |file| file.write string }
-			string = "<doc><name>#{@user.name}</name><br><surname>#{@user.surname}</surname><br><id>#{@user.id}</id></doc>"
+			string = "<doc><name>#{@user.name}</name> <surname>#{@user.surname}</surname> <deposit>#{@user.deposit}</depsit><br></doc>"
 			File.open('info.xml', 'a'){ |file| file.write string }
 			string = File.open('info.xml', 'r'){ |file| file.read }
 			string
@@ -88,6 +88,18 @@ class Users < ActiveRecord::Base
 			"error"
 		end
 	end	
+
+	#To the future (after this method let's check return value and create a new building
+	def buy(u_id, w_type)
+		buying_building = Shop.find_by(work_type: w_type)
+		@user = Users.find_by(id: u_id)
+		if @user.deposit - buying_building.price >= 0
+			@user.deposit -= price
+			true
+		else
+			false
+		end
+	end
 end
 
 
@@ -113,23 +125,41 @@ class Buildings < ActiveRecord::Base
 		
 	end
 
-	#Getting building's info
-	def read(b_id)
-		@building = Buildings.find_by(id: b_id)
-		if @building != nil
-			string = '<?xml version="1.0" encoding="utf-8"?>'
-			File.open('info.xml', 'w'){ |file| file.write string }
-			string = "<doc><id>#{@building.id}</id><br><work_type>#{@building.work_type}</work_type><br><x>#{@building.x}</x><br><y>#{@building.y}</y></doc>"
-			File.open('info.xml', 'a'){ |file| file.write string }
-			string = File.open('info.xml', 'r'){ |file| file.read }
-			string
-
+	#Getting user's buildings info
+	def read(o_id, num_of_buildings)
+		string = '<?xml version="1.0" encoding="utf-8"?><doc>'
+		File.open('info.xml', 'w'){ |file| file.write string }
+		if num_of_buildings != nil
+			#num_of_buildings.downto(1) {
+			@building = Buildings.where("owner_id = ?", o_id)
+			if @building!= nil
+				@building.each do |building|	
+					string = "<id>#{building.id}</id> <work_type>#{building.work_type}</work_type> <x>#{building.x}</x> <y>#{building.y}</y><br>"
+					File.open('info.xml', 'a'){ |file| file.write string }
+				end
+			#}
+			end
+			File.open('info.xml', 'a'){ |file| file.write "</doc>" }
 		else
-			"There is no building with this ID"
+			File.open('info.xml', 'a'){ |file| file.write "<error>User has no buildings</error></doc>"}
 			#Should return error value for client 
 		end
+		File.open('info.xml', 'r'){ |file| file.read }
 	end
 	
+	#Moving building
+	def move(b_id, xx, yy)
+		check = Buildings.find_by(x: xx, y: yy)	
+		if check == nil
+			@building = Buildings.find_by(id: b_id)	
+			@building.x = xx
+			@building.y = yy
+			@building.save
+		else
+			"There is a building on this point"
+		end	
+	end
+
 	#Delete by id 
 	def delete(b_id)
 		@building = Buildings.find_by(id: b_id)

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+	<user id="1" name="Alex" surname="Safronov" deposit="0">
+		<building id="1" x="20" y="40" work_type="factory"></building>
+		<building id="2" x="60" y="70" work_type="factory"></building>
+	</user>
+</doc>

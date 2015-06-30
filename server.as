@@ -9,7 +9,7 @@ public class server
     {
         var info:String;
         var loader:URLLoader = new URLLoader();
-        loader.load(new URLRequest("http://localhost:4567/"+id.toString()));
+        loader.load(new URLRequest("http://localhost:4567/read_b/"+id.toString()));
         loader.addEventListener(Event.COMPLETE, onComplete);
 
         function onComplete(event:Event):void

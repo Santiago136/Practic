@@ -3,7 +3,7 @@ package
 
 import flash.display.Sprite;
 import flash.text.TextField;
-import downloader
+import server
 
 public class Main extends Sprite
 {
@@ -12,10 +12,12 @@ public class Main extends Sprite
         var txt:TextField = new TextField();
         txt.width = 1000;
         txt.height = 1000;
-        txt.text = "Hello world";
+        txt.text = "If you see this, there is an error";
         addChild(txt);
 
-        txt.text = server.load_info(1);
+        var srv:server = new server();
+        txt.text = srv.load_info(1);
     }
 }
 }
+

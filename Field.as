@@ -1,9 +1,9 @@
 package {
 import flash.display.Sprite;
 
-public class Fields extends Sprite
+public class Field extends Sprite
 {
-    public function Fields() 
+    public function Field() 
     {
         var field:Sprite = new Sprite();
         field.graphics.beginFill(0x25D500);

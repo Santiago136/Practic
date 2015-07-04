@@ -1,5 +1,5 @@
 package {
-public class Buildings
+public class Building
 {
     public var work_type:String;
     public var x:int;

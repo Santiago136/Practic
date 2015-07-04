@@ -3,7 +3,7 @@ package {
 import flash.net.*;
 import flash.events.*;
 
-public class Users
+public class User
 {
     public var user_name:String = "name";
     public var surname:String = "surname";

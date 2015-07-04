@@ -1,10 +1,9 @@
 package {
 
-import flash.display.Sprite;
-import flash.text.TextField;import flash.net.*;
+import flash.net.*;
 import flash.events.*;
 
-public class users extends Sprite
+public class Users
 {
     public var user_name:String = "name";
     public var surname:String = "surname";

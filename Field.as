@@ -1,14 +1,19 @@
 package {
+
+import flash.display.DisplayObject;
 import flash.display.Sprite;
+
 
 public class Field extends Sprite
 {
-    public function Field() 
+    [Embed(source="field.jpg")]
+    public static var Obj:Class;
+
+    public function Field()
     {
-        var field:Sprite = new Sprite();
-        field.graphics.beginFill(0x25D500);
-        field.width = 700;
-        field.height = 700;
+        var field:DisplayObject = new Obj() as DisplayObject;
+        field.height = 300;
+        field.width = 500;
         addChild(field);
     }
 }

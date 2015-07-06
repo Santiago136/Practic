@@ -30,7 +30,7 @@ public class Main extends Sprite
 
     public function btn1_click():void
     {
-        building.Create(1, "fatory", 150, 150, Build, Error);
+        building.Create(1, "factory", 150, 150, Build, Error);
     }
 
     public function on_get(file:XML):void

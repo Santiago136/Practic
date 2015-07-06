@@ -30,11 +30,13 @@ public class Building extends Sprite
         {
             var file:XML = XML(loader.data);
             status = status.@*.toXMLString();
-            if (status == "Complete")
+            if (status == "Created")
             {
                 if (work_type = "factory")
                 {
                     var field:DisplayObject = new Factory() as DisplayObject;
+                    field.x = x; 
+                    field.y = y;
                     field.height = 70;
                     field.width = 70;
                     addChild(field);
@@ -42,6 +44,8 @@ public class Building extends Sprite
                 }
                 if (work_type = "auto_workshop") {
                     var field:DisplayObject = new Auto_Workshop() as DisplayObject;
+                    field.x = x; 
+                    field.y = y;
                     field.height = 70;
                     field.width = 70;
                     addChild(field);

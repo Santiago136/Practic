@@ -23,7 +23,7 @@ public class Building extends Sprite
 
     public function Create(id:int, work_type:String, x:int, y:int, fn:Function, err:Function):void
     {
-        loader.load(new URLRequest("http:localhost:4567/new_b/"+id.toString()+work_type.toString()+x.toString()+y.toString() ));
+        loader.load(new URLRequest("http:localhost:4567/new_b/"+id.toString()+"-"+work_type.toString()+"-"+x.toString()+"-"+y.toString() ));
         loader.addEventListener(Event.COMPLETE, onComplete);
 
         function onComplete(event:Event):void

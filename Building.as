@@ -29,10 +29,10 @@ public class Building extends Sprite
         function onComplete(event:Event):void
         {
             var file:XML = XML(loader.data);
-            status = status.@*.toXMLString();
+            status = file.@*.toXMLString();
             if (status == "Created")
             {
-                if (work_type = "factory")
+                if (work_type == "factory")
                 {
                     var field:DisplayObject = new Factory() as DisplayObject;
                     field.x = x; 
@@ -42,7 +42,7 @@ public class Building extends Sprite
                     addChild(field);
                     fn();
                 }
-                if (work_type = "auto_workshop") {
+                if (work_type == "auto_workshop") {
                     var field:DisplayObject = new Auto_Workshop() as DisplayObject;
                     field.x = x; 
                     field.y = y;

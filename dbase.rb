@@ -22,75 +22,72 @@ class Users < ActiveRecord::Base
 	@user
 
 	#Creating a new user
-	def create(n, sn)
-		check = Users.find_by(name: n, surname: sn)
-		if check == nil
-			last_user = Users.last
-			if last_user != nil
-				@user = Users.create(id: last_user.id+1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0, deposit: 0).valid?
-			else
-				@user = Users.create(id: 1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0, deposit: 0).valid?	
-			end
-			"Created"
+	def self.create(n, sn)
+		string = '<?xml version="1.0" encoding="utf-8"?><doc>'
+		last_user = Users.last
+		if last_user != nil
+			@user = Users.create(id: last_user.id+1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0, deposit: 0).valid?
 		else
-			"There is a user with these name and surname"
-			#Should return error value for client 
+			@user = Users.create(id: 1, name: "#{n}", surname: "#{sn}", num_of_buildings: 0, deposit: 0).valid?	
 		end
+		string = "<status st='Created'/></doc>"
+		string
 	end
 
 	#Getting user's info
-	def read(u_id)
+	def self.read(u_id)
+		string = '<?xml version="1.0" encoding="utf-8"?>'
+
 		@user = Users.find_by(id: u_id)
 		if @user != nil
-			string = '<?xml version="1.0" encoding="utf-8"?>'
-			File.open('info.xml', 'w'){ |file| file.write string }
-			string = "<doc><name>#{@user.name}</name> <surname>#{@user.surname}</surname> <deposit>#{@user.deposit}</depsit><br></doc>"
-			File.open('info.xml', 'a'){ |file| file.write string }
-			string = File.open('info.xml', 'r'){ |file| file.read }
-			string
-
+			string += "<doc><user name='#{@user.name}' surname='#{@user.surname}' deposit='#{@user.deposit}'/></doc>"
 		else
-			"There is no user with this ID"
-			#Should return error value for client 
+			string += "<doc><status st='Error'/></doc>"
 		end
+		string
+
 	end
 
 	#Deleting user by id
-	def delete(u_id)
+	def self.delete(u_id)
+		string = '<?xml version="1.0" encoding="utf-8"?>'
+
 		@user = Users.find_by(id: u_id)
 		if (@user != nil)
    			@user.destroy
-			"User and user's buildings were deleted"
+
+			string += "<doc><status st='Deleted'/></doc>"
 		else
-			"There is nothing to delete"
-			#Should return error value for client 
+			string += "<doc><status st='Error'/></doc>"
 		end
+		string
+
 	end
 	
 	#Additional methods
-	def inc(u_id)
+	def self.inc(u_id)
 		@user = Users.find_by(id: u_id)
 		@user.num_of_buildings = @user.num_of_buildings + 1
 		@user.save
 	end
 	
-	def dec(u_id)
+	def self.dec(u_id)
 		@user = Users.find_by(id: u_id)
 		@user.num_of_buildings = @user.num_of_buildings - 1
 		@user.save
 	end
 
-	def find_num(u_id)
+	def self.find_num(u_id)
 		@user = Users.find_by(id: u_id)
 		if @user != nil
 			@user.num_of_buildings
 		else 
-			"error"
+			"error" 
 		end
 	end	
 
 	#To the future (after this method let's check return value and create a new building
-	def buy(u_id, w_type)
+	def self.buy(u_id, w_type)
 		buying_building = Shop.find_by(work_type: w_type)
 		@user = Users.find_by(id: u_id)
 		if @user.deposit - buying_building.price >= 0
@@ -108,7 +105,8 @@ class Buildings < ActiveRecord::Base
   	@building
 	
 	#Creating a new building
-	def create(o_id, xx, yy, w_type)
+	def self.create(o_id, xx, yy, w_type)
+		string = '<?xml version="1.0" encoding="utf-8"?><doc>'
 		check = Buildings.find_by(x: xx, y: yy, owner_id: o_id)
 		if check == nil
 			last_building = Buildings.last
@@ -117,70 +115,69 @@ class Buildings < ActiveRecord::Base
 			else
 				@building = Buildings.create(id: 1, owner_id: o_id, x: xx, y: yy, work_type: w_type).valid?
 			end
-			"Created"
+			string = "<status st='Created'/></doc>" 
 		else
-			"There is a building on this point"
-			#Should return error value for client 
+			string = "<status st='Error'/></doc>"
 		end
+		string
 		
 	end
 
 	#Getting user's buildings info
-	def read(o_id, num_of_buildings)
+	def self.read(o_id, num_of_buildings)
 		string = '<?xml version="1.0" encoding="utf-8"?><doc>'
-		File.open('info.xml', 'w'){ |file| file.write string }
 		if num_of_buildings != nil
-			#num_of_buildings.downto(1) {
+			string = "<user id='#{o_id}'>"
 			@building = Buildings.where("owner_id = ?", o_id)
 			if @building!= nil
 				@building.each do |building|	
-					string = "<id>#{building.id}</id> <work_type>#{building.work_type}</work_type> <x>#{building.x}</x> <y>#{building.y}</y><br>"
-					File.open('info.xml', 'a'){ |file| file.write string }
+					string += "<building id='#{building.id}' work_type='#{building.work_type}' x='#{building.x}' y='#{building.y}'/><br>"
 				end
-			#}
+			string += "</user>"
 			end
-			File.open('info.xml', 'a'){ |file| file.write "</doc>" }
+			string += "</doc>"
 		else
-			File.open('info.xml', 'a'){ |file| file.write "<error>User has no buildings</error></doc>"}
-			#Should return error value for client 
+			string += "<status st='Error'/></doc>"
 		end
-		File.open('info.xml', 'r'){ |file| file.read }
+		string
 	end
 	
 	#Moving building
-	def move(b_id, xx, yy)
+	def self.move(b_id, xx, yy)
 		check = Buildings.find_by(x: xx, y: yy)	
+
 		if check == nil
 			@building = Buildings.find_by(id: b_id)	
 			@building.x = xx
 			@building.y = yy
 			@building.save
 		else
-			"There is a building on this point"
+			string = '<?xml version="1.0" encoding="utf-8"?><doc>'
+			string += "<status st='Error'/></doc>"
 		end	
 	end
 
 	#Delete by id 
-	def delete(b_id)
+	def self.delete(b_id)
+		string = '<?xml version="1.0" encoding="utf-8"?><doc>'
 		@building = Buildings.find_by(id: b_id)
 		if (@building != nil)
   			@building.destroy
-			"Building deleted"
+			string = "<status st='Deleted'/></doc>"
 		else
-			"There is nothing to delete"
-			#Should return error value for client 
+			string = "<status st='Error'/></doc>"
 		end
 
 	end
 
 	#Additional methods
-	def find_owner(b_id)
+	def self.find_owner(b_id)
 		@building = Buildings.find_by(id: b_id)
 		@building.owner_id
 	end
 
 	#Delete by owner
-	def delete_by_owner(o_id, num_of_buildings)
+	def self.delete_by_owner(o_id, num_of_buildings)
 		if num_of_buildings != "error"
 			num_of_buildings.downto(0) {
 				@building = Buildings.find_by(owner_id: o_id)
@@ -191,4 +188,3 @@ class Buildings < ActiveRecord::Base
 		end
 	end
 end
-

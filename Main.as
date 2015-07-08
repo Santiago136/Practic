@@ -1,9 +1,10 @@
 package
 {
-
-import flash.display.DisplayObject;
+import flash.display.Bitmap;
+import flash.display.Loader;
 import flash.display.Sprite;
-import flash.text.TextField;
+import flash.events.Event;
+import flash.net.URLRequest;
 
 public class Main extends Sprite
 {
@@ -11,46 +12,59 @@ public class Main extends Sprite
     public var building:Building = new Building();
 
     public var field:Field = new Field();
-    public var screen:TextField = new TextField();
-    public var btn1:Button = new Button(400, 250, "Read", btn1_click);
+    public var btn_read:Button = new Button("Read", btn_read_click);
+    public var btn_create:Button = new Button("Create", btn_create_click);
+    public var btn_clear:Button = new Button("Clear", btn_clear_click);
 
     public function Main():void
     {
-        screen.x = 100;
-        screen.y = 15;
-        screen.border = true;
-        screen.height = 20; //horizontal
-        screen.width = 300; //vertical
-
         addChild(field);
-        addChild(btn1);
-        addChild(screen);
-        user.Read_info(1, on_get);
+
+        var loader:Loader = new Loader();
+        loader.load(new URLRequest("http://localhost:4567/factory.png"));
+        loader.addEventListener(Event.COMPLETE, onComplete);
+
+        function onComplete(e:Event):void
+        {
+            var image:Bitmap = loader.contentLoaderInfo.content as Bitmap
+            addChild(image);
+        }
+
+        btn_read.x = 400;
+        btn_read.y = 250;
+        field.addChild(btn_read);
+        btn_create.x = 325;
+        btn_create.y = 250;
+        field.addChild(btn_create);
+        addChild(field.screen);
     }
 
-    public function btn1_click():void
+    private function btn_read_click(e:Event):void
     {
-        building.Create(1, "factory", 150, 150, Build, Error);
+        user.read_info(1, read_xml);
     }
 
-    public function on_get(file:XML):void
+    private function btn_create_click(e:Event):void
+    {
+        building.create(1, "factory", 150, 150, field, err);
+    }
+
+    private function btn_clear_click():void
+    {
+        field.screen.text = "";
+    }
+
+    private function read_xml(file:XML):void
     {
         user.user_name = file.user.@name.toXMLString();
         user.surname = file.user.@surname.toXMLString();
         building.work_type = file.user.building.@work_type.toXMLString();
-        screen.text = user.user_name + " " + user.surname + "/n";
-        screen.appendText(building.work_type);
+        field.screen.text = "Greetings " + user.user_name + " " + user.surname + "!";
     }
 
-    public function Build():void
+    private function err():void
     {
-        addChild(building);
-        screen.text = "Built";
-    }
-
-    public function Error():void
-    {
-        screen.text = "Can't build";
+        field.screen.text = "ERROR"
     }
 }
 }

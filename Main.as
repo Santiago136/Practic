@@ -36,6 +36,9 @@ public class Main extends Sprite
         btn_create.x = 325;
         btn_create.y = 250;
         field.addChild(btn_create);
+        btn_clear.x = 250;
+        btn_clear.y = 250;
+        field.addChild(btn_clear);
         addChild(field.screen);
     }
 
@@ -49,7 +52,7 @@ public class Main extends Sprite
         building.create(1, "factory", 150, 150, field, err);
     }
 
-    private function btn_clear_click():void
+    private function btn_clear_click(e:Event):void
     {
         field.screen.text = "";
     }

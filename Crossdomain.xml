@@ -1,0 +1,4 @@
+<cross-domain-policy>
+<!DOCTYPE cross-domain-policy SYSTEM «www.adobe.com/xml/dtds/cross-domain-policy.dtd»>
+  <allow-access-from domain="*" />
+</cross-domain-policy>

@@ -1,14 +1,17 @@
 require 'sinatra'
 require 'sinatra/activerecord'
 require "#{File.dirname(__FILE__)}/dbase.rb"
+set :public_folder, 'public'
 
 
 db = Dbase.new
 db.connect
 
 #Actions with users
-get '/new_u/:name-:surname' do
-  	Users.create(params[:name], params[:surname])
+
+get '/enter/:id-:name-:surname' do
+	Users.create_new(params[:id], params[:name], params[:surname])
+	Buildings.read(params[:id])
 end
 
 get '/read_u/:id' do
@@ -16,27 +19,32 @@ get '/read_u/:id' do
 end
 
 get '/del_u/:id' do
-	Buildings.delete_by_owner(params[:id], Users.find_num(params[:id]))
-  	Users.delete(params[:id])
+  	Users.del(params[:id])
+end
+
+get '/' do
+  	File.open('info.xml', 'r'){ |file| file.read }
 end
 
 #Actions with buildings
 get '/new_b/:id-:work_type-:x-:y' do
-	Users.inc(params[:id])
-	Buildings.create(params[:id], params[:x], params[:y], params[:work_type])
+	Buildings.create_new(params[:id],params[:work_type], params[:x], params[:y])
+	Buildings.read(params[:id])
 end
 
-get '/read_b/:owner_id' do
-	Buildings.read(params[:owner_id], Users.find_num(params[:owner_id]))
+get '/read_b/:owner' do
+	Buildings.read(params[:owner])
 end
 
-get '/move/:id-:x-:y' do
-	Buildings.move(params[:id], params[:x], params[:y])
+get '/move/:id-:owner-:x-:y' do
+	Buildings.move(params[:id], params[:owner], params[:x], params[:y])
+	Buildings.read(params[:owner])
 end
 
-get '/del_b/:id' do
-	Users.dec(Buildings.find_owner(:id) )
-	Buildings.delete(params[:id])
+get '/del_b/:id-:owner' do
+	Buildings.del(params[:id], params[:owner])
+	Buildings.read(params[:owner])
 end
+
 
 
